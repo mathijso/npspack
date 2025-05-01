@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Controllers\LegalController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+Route::get('/privacy-policy', [LegalController::class, 'privacy'])->name('privacy');
+Route::get('/terms-of-service', [LegalController::class, 'terms'])->name('terms');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
