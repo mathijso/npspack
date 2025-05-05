@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Arr;
 
 class SiteController extends Controller
 {
@@ -50,12 +51,16 @@ class SiteController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'domain' => 'required|string|max:255|unique:sites,domain',
+            'allowed_paths_input' => 'nullable|string',
         ]);
+
+        $allowedPaths = $this->parseAllowedPaths($request->input('allowed_paths_input'));
 
         Auth::user()->sites()->create([
             'name' => $validated['name'],
             'domain' => $validated['domain'],
             'public_id' => (string) Str::uuid(),
+            'allowed_paths' => $allowedPaths,
         ]);
 
         return redirect()->route('sites.index')
@@ -90,11 +95,17 @@ class SiteController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            // Domain unique check should ignore the current site's domain
             'domain' => 'required|string|max:255|unique:sites,domain,' . $site->id,
+            'allowed_paths_input' => 'nullable|string',
         ]);
 
-        $site->update($validated);
+        $allowedPaths = $this->parseAllowedPaths($request->input('allowed_paths_input'));
+
+        $site->update([
+            'name' => $validated['name'],
+            'domain' => $validated['domain'],
+            'allowed_paths' => $allowedPaths,
+        ]);
 
         return redirect()->route('sites.index')
             ->with('success', 'Site succesvol bijgewerkt.');
@@ -110,5 +121,27 @@ class SiteController extends Controller
 
         return redirect()->route('sites.index')
              ->with('success', 'Site succesvol verwijderd.');
+    }
+
+    /**
+     * Parse the newline-separated string of paths from the textarea into an array.
+     *
+     * @param string|null $pathsInput
+     * @return array|null Returns null if input is empty/null, otherwise an array of paths.
+     */
+    private function parseAllowedPaths(?string $pathsInput): ?array
+    {
+        if (empty($pathsInput)) {
+            return null; // Store null if empty, meaning allow all pages
+        }
+
+        $paths = preg_split('/\r\n|\r|\n/', $pathsInput);
+
+        return collect($paths)
+            ->map(fn($path) => trim($path))
+            ->filter(fn($path) => !empty($path) && str_starts_with($path, '/')) // Ensure path starts with /
+            ->unique()
+            ->values()
+            ->all();
     }
 }

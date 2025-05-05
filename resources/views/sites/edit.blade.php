@@ -55,6 +55,20 @@
                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Deze ID gebruik je in het embed script.</p>
                      </div>
 
+                    {{-- Allowed Paths --}}
+                    <div class="mb-6">
+                        <label for="allowed_paths_input" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Toegestane Paden (optioneel)</label>
+                        <textarea name="allowed_paths_input" id="allowed_paths_input" rows="5"
+                               placeholder="/over-ons
+/blog/*
+/contact.html"
+                               class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('allowed_paths_input') border-red-500 @enderror">{{ old('allowed_paths_input', $site->allowed_paths ? implode("\n", $site->allowed_paths) : '') }}</textarea>
+                        @error('allowed_paths_input')
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Voer één pad per regel in. Paden moeten beginnen met een /. Gebruik * als wildcard (bijv. /blog/*). Laat leeg om de widget op alle pagina's toe te staan.</p>
+                    </div>
+
                     <div class="flex justify-end">
                          <a href="{{ route('sites.index') }}" class="px-4 py-2 mr-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
                             Annuleren

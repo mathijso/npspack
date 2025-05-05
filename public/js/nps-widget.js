@@ -90,6 +90,7 @@
 
     let selectedScore = null;
     let overlayElement = null;
+    let siteConfig = { allowed_paths: null }; // Store fetched config
 
     // --- Functions --- 
 
@@ -228,11 +229,87 @@
         });
     }
 
-    // --- Initialization --- 
-    function init() {
+    async function fetchSiteConfig() {
+        const configUrl = `/api/sites/${siteId}/config`;
+        try {
+            const response = await fetch(configUrl, {
+                headers: { 'Accept': 'application/json' },
+            });
+            if (!response.ok) {
+                console.error('NPS Widget: Failed to fetch site config', response.status);
+                return false; // Indicate failure
+            }
+            siteConfig = await response.json();
+            return true; // Indicate success
+        } catch (error) {
+            console.error('NPS Widget: Error fetching site config:', error);
+            return false; // Indicate failure
+        }
+    }
+
+    function normalizePath(path) {
+        if (!path) return '/';
+        let normalized = path.trim();
+        // Remove .html extension
+        if (normalized.endsWith('.html')) {
+            normalized = normalized.slice(0, -5);
+        }
+        // Ensure leading slash, remove trailing slash (unless it's just "/")
+        if (!normalized.startsWith('/')) {
+            normalized = '/' + normalized;
+        }
+        if (normalized.length > 1 && normalized.endsWith('/')) {
+            normalized = normalized.slice(0, -1);
+        }
+        return normalized;
+    }
+
+    function isPathAllowed(currentPath, allowedPaths) {
+        if (!allowedPaths || allowedPaths.length === 0) {
+            return true; // No restrictions set
+        }
+
+        const normalizedCurrentPath = normalizePath(currentPath);
+
+        for (const pattern of allowedPaths) {
+            const normalizedPattern = normalizePath(pattern);
+
+            if (normalizedPattern.endsWith('*')) {
+                // Wildcard match (/blog/* should match /blog/anything)
+                const basePattern = normalizedPattern.slice(0, -1); // Remove the *
+                // Ensure the current path starts with the base and has something after the slash (or is the base itself)
+                if (normalizedCurrentPath.startsWith(basePattern) &&
+                    (normalizedCurrentPath.length === basePattern.length || normalizedCurrentPath.charAt(basePattern.length) === '/')) {
+                    return true;
+                }
+            } else if (normalizedPattern === normalizedCurrentPath) {
+                // Exact match
+                return true;
+            }
+        }
+
+        return false; // No match found
+    }
+
+    // --- Initialization ---
+    async function init() { // Make init async
+        // Fetch config first
+        const configFetched = await fetchSiteConfig();
+        if (!configFetched) {
+            // Optionally handle config fetch failure, maybe default to not showing?
+            console.warn('NPS Widget: Could not fetch config, widget will not show.');
+            return;
+        }
+
+        // Check if path is allowed
+        if (!isPathAllowed(window.location.pathname, siteConfig.allowed_paths)) {
+            console.log('NPS Widget: Path not allowed.', window.location.pathname, siteConfig.allowed_paths);
+            return;
+        }
+
+        // Check local storage (existing logic)
         try {
             const lastSubmission = localStorage.getItem(localStorageKey);
-            // Basic check: Don't show if submitted within the last 30 days
             if (lastSubmission && (Date.now() - parseInt(lastSubmission, 10)) < 30 * 24 * 60 * 60 * 1000) {
                 console.log('NPS Widget: Already submitted recently.');
                 return;
@@ -241,10 +318,10 @@
             console.warn('Could not read from localStorage');
         }
 
+        // If allowed and not submitted recently, proceed to show
         injectStyles();
-        // Show modal after delay
         setTimeout(showModal, widgetDelay);
-        console.log(`NPS Widget Initialized for site ${siteId}. Modal will show in ${widgetDelay / 1000}s.`);
+        console.log(`NPS Widget Initialized for site ${siteId}. Path allowed. Modal will show in ${widgetDelay / 1000}s.`);
     }
 
     // Run init when the DOM is ready
