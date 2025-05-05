@@ -131,11 +131,11 @@ new class extends Component {
          <div class="w-full my-6 space-y-4">
             @if ($isAdmin)
                  <div class="p-4 text-sm text-blue-700 bg-blue-100 rounded-lg dark:bg-blue-900 dark:text-blue-300">
-                    Je hebt administrator toegang (Pro Plan).
+                    You have administrator access (Pro Plan).
                  </div>
              @elseif ($subscription)
                  <div>
-                     <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Huidig Plan:</p>
+                     <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Current Plan:</p>
                      <p class="text-sm text-gray-600 dark:text-gray-400">{{ $subscription->variant->name ?? 'N/A' }}</p>
                  </div>
                  <div>
@@ -144,12 +144,12 @@ new class extends Component {
                  </div>
                  @if($subscription->onGracePeriod())
                     <div>
-                         <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Eindigt op:</p>
+                         <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Ends on:</p>
                          <p class="text-sm text-gray-600 dark:text-gray-400">{{ $subscription->ends_at?->isoFormat('LL') ?? 'N/A' }}</p>
                      </div>
                  @elseif($subscription->renews_at)
                      <div>
-                         <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Verlengd op:</p>
+                         <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Renews on:</p>
                          <p class="text-sm text-gray-600 dark:text-gray-400">{{ $subscription->renews_at?->isoFormat('LL') ?? 'N/A' }}</p>
                      </div>
                  @endif
@@ -158,23 +158,24 @@ new class extends Component {
                      <div class="pt-4">
                         <a href="{{ $customerPortalUrl }}" target="_blank"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
-                            Beheer Abonnement
+                            Manage Subscription
                         </a>
                     </div>
                  @endif
              @else 
                 <div class="p-4 text-sm text-gray-700 bg-gray-100 rounded-lg dark:bg-gray-700 dark:text-gray-300">
-                    Je hebt geen actief abonnement.
+                    You do not have an active subscription.
                  </div>
                  <div class="pt-2">
                      <a href="{{ route('subscribe') }}"
                         class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
-                        Kies een Plan
+                        Choose a Plan
                     </a>
                  </div>
              @endif
         </div>
         <livewire:settings.delete-user-form />
+        
     </x-settings.layout>
 
     

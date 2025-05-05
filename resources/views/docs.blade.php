@@ -6,7 +6,7 @@
     >
     <div class="relative w-full mb-6">
         <flux:heading size="xl" level="1">{{ __('Documentation') }}</flux:heading>
-        <flux:subheading size="lg" class="mb-6">{{ __('Documentation for the application') }}</flux:subheading>
+        <flux:subheading size="lg" class="mb-6">{{ __('How to use the NPS Dashboard application') }}</flux:subheading>
         <flux:separator variant="subtle" />
     </div>
         <div class="container px-4 py-8 mx-auto">
@@ -15,161 +15,180 @@
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
                 <!-- Sidebar Navigation -->
                 <div class="lg:col-span-1">
-                    <div class="sticky p-4 bg-white border rounded-lg shadow-sm top-4 border-zinc-200">
-                        <h2 class="mb-4 text-lg font-semibold text-zinc-800">Contents</h2>
+                    <div class="sticky p-4 bg-white border rounded-lg shadow-sm top-4 border-zinc-200 dark:bg-gray-800 dark:border-gray-600">
+                        <h2 class="mb-4 text-lg font-semibold text-zinc-800 dark:text-white">Contents</h2>
                         <nav class="space-y-1">
-                            <a href="#getting-started" class="block px-3 py-2 font-medium rounded-md bg-primary-50 text-primary-700">Getting Started</a>
-                            <a href="#installation" class="block px-3 py-2 rounded-md hover:bg-zinc-100 text-zinc-700">Installation</a>
-                            <a href="#configuration" class="block px-3 py-2 rounded-md hover:bg-zinc-100 text-zinc-700">Configuration</a>
-                            <a href="#features" class="block px-3 py-2 rounded-md hover:bg-zinc-100 text-zinc-700">Features</a>
-                            <a href="#api" class="block px-3 py-2 rounded-md hover:bg-zinc-100 text-zinc-700">API Reference</a>
-                            <a href="#troubleshooting" class="block px-3 py-2 rounded-md hover:bg-zinc-100 text-zinc-700">Troubleshooting</a>
+                            <a href="#getting-started" class="block px-3 py-2 font-medium rounded-md bg-primary-50 text-primary-700 dark:bg-primary-700 dark:text-white">Getting Started</a>
+                            <a href="#features" class="block px-3 py-2 rounded-md hover:bg-zinc-100 text-zinc-700 dark:hover:bg-gray-700 dark:text-gray-300">Features Overview</a>
+                            <a href="#nps-dashboard" class="block px-3 py-2 rounded-md hover:bg-zinc-100 text-zinc-700 dark:hover:bg-gray-700 dark:text-gray-300">NPS Dashboard Guide</a>
+                            <a href="#adding-sites-script" class="block px-3 py-2 rounded-md hover:bg-zinc-100 text-zinc-700 dark:hover:bg-gray-700 dark:text-gray-300">Adding Sites & Script</a>
                         </nav>
                     </div>
                 </div>
                 
                 <!-- Main Content -->
                 <div class="lg:col-span-3">
-                    <div class="prose prose-zinc max-w-none">
+                    <div class="prose prose-zinc max-w-none dark:prose-invert prose-headings:text-zinc-800 dark:prose-headings:text-white prose-p:text-zinc-600 dark:prose-p:text-gray-300 prose-ul:text-zinc-600 dark:prose-ul:text-gray-300 prose-strong:text-zinc-700 dark:prose-strong:text-gray-200 prose-code:bg-zinc-100 dark:prose-code:bg-gray-700 prose-code:text-zinc-700 dark:prose-code:text-gray-200 prose-code:px-1 prose-code:py-0.5 prose-code:rounded">
                         <!-- Getting Started Section -->
-                        <section id="getting-started" class="p-6 mb-12 bg-white border rounded-lg shadow-sm border-zinc-200">
-                            <h2 class="mb-4 text-2xl font-bold text-zinc-800">Getting Started</h2>
-                            <p class="mb-4">Welcome to our application documentation. This guide will help you understand how to set up, configure, and use all the features of our platform.</p>
-                            <p>Before you begin, make sure you have the following prerequisites:</p>
-                            <ul class="pl-6 mb-4 list-disc">
-                                <li>PHP 8.1 or higher</li>
-                                <li>Composer installed</li>
-                                <li>Node.js and NPM</li>
-                                <li>A database server (MySQL, PostgreSQL, etc.)</li>
-                            </ul>
-                            <div class="p-4 rounded-md bg-zinc-50">
-                                <p class="text-sm text-zinc-600">This documentation is continuously updated. If you find any issues or have suggestions for improvement, please let us know.</p>
+                        <section id="getting-started" class="p-6 mb-12 bg-white border rounded-lg shadow-sm border-zinc-200 dark:bg-gray-800 dark:border-gray-700">
+                            <h2 class="mb-4 text-2xl font-bold">Getting Started</h2>
+                            <p class="mb-4">Welcome! This guide will help you understand how to use the NPS Dashboard application to track customer feedback for your websites.</p>
+                            <p class="mb-4">To begin, simply log in to your account. If you haven't created any sites yet, you'll be prompted to do so. The main navigation menu (usually on the left or top) will help you access different parts of the application, such as the dashboard, site settings, and your account profile.</p>
+                            <div class="p-4 rounded-md bg-zinc-50 dark:bg-gray-700">
+                                <p class="text-sm text-zinc-600 dark:text-gray-300">Need help? If you encounter any issues or have questions, please contact support.</p>
                             </div>
                         </section>
                         
-                        <!-- Installation Section -->
-                        <section id="installation" class="p-6 mb-12 bg-white border rounded-lg shadow-sm border-zinc-200">
-                            <h2 class="mb-4 text-2xl font-bold text-zinc-800">Installation</h2>
-                            <p class="mb-4">Follow these steps to install the application:</p>
-                            
-                            <div class="mb-6">
-                                <h3 class="mb-2 text-xl font-semibold text-zinc-700">1. Clone the repository</h3>
-                                <div class="p-3 overflow-x-auto rounded-md bg-zinc-900 text-zinc-200">
-                                    <code>git clone https://github.com/yourusername/yourrepository.git</code>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <h3 class="mb-2 text-xl font-semibold text-zinc-700">2. Install dependencies</h3>
-                                <div class="p-3 mb-2 overflow-x-auto rounded-md bg-zinc-900 text-zinc-200">
-                                    <code>composer install</code>
-                                </div>
-                                <div class="p-3 overflow-x-auto rounded-md bg-zinc-900 text-zinc-200">
-                                    <code>npm install && npm run build</code>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <h3 class="mb-2 text-xl font-semibold text-zinc-700">3. Set up environment</h3>
-                                <div class="p-3 mb-2 overflow-x-auto rounded-md bg-zinc-900 text-zinc-200">
-                                    <code>cp .env.example .env</code>
-                                </div>
-                                <p class="mt-2 text-sm text-zinc-600">Edit the .env file to configure your database and other settings.</p>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <h3 class="mb-2 text-xl font-semibold text-zinc-700">4. Generate application key</h3>
-                                <div class="p-3 overflow-x-auto rounded-md bg-zinc-900 text-zinc-200">
-                                    <code>php artisan key:generate</code>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <h3 class="mb-2 text-xl font-semibold text-zinc-700">5. Run migrations</h3>
-                                <div class="p-3 overflow-x-auto rounded-md bg-zinc-900 text-zinc-200">
-                                    <code>php artisan migrate</code>
-                                </div>
-                            </div>
-                            
-                            <div class="p-4 border-l-4 rounded-md bg-primary-50 border-primary-500">
-                                <p class="text-primary-800">For a development environment, you can seed the database with test data using <code class="bg-primary-100 px-1 py-0.5 rounded">php artisan db:seed</code></p>
-                            </div>
-                        </section>
-                        
-                        <!-- Configuration Section -->
-                        <section id="configuration" class="p-6 mb-12 bg-white border rounded-lg shadow-sm border-zinc-200">
-                            <h2 class="mb-4 text-2xl font-bold text-zinc-800">Configuration</h2>
-                            <p class="mb-4">After installation, you may want to configure the following aspects of the application:</p>
-                            
-                            <div class="mb-6">
-                                <h3 class="mb-2 text-xl font-semibold text-zinc-700">Environment Settings</h3>
-                                <p>The main configuration file is <code class="bg-zinc-100 px-1 py-0.5 rounded">.env</code>. Here are some important settings:</p>
-                                <ul class="pl-6 mt-2 list-disc">
-                                    <li>Database connection details</li>
-                                    <li>Mail server configuration</li>
-                                    <li>Queue and cache drivers</li>
-                                    <li>Application URL and environment</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <h3 class="mb-2 text-xl font-semibold text-zinc-700">User Authentication</h3>
-                                <p>The application comes with a built-in authentication system. You can customize:</p>
-                                <ul class="pl-6 mt-2 list-disc">
-                                    <li>Password requirements</li>
-                                    <li>Session lifetime</li>
-                                    <li>Two-factor authentication settings</li>
-                                </ul>
-                            </div>
-                        </section>
-                        
-                        <!-- Features Section Placeholder -->
-                        <section id="features" class="p-6 mb-12 bg-white border rounded-lg shadow-sm border-zinc-200">
-                            <h2 class="mb-4 text-2xl font-bold text-zinc-800">Features</h2>
-                            <p class="mb-4">Our application includes the following key features:</p>
+                        <!-- Features Section (User-Focused) -->
+                        <section id="features" class="p-6 mb-12 bg-white border rounded-lg shadow-sm border-zinc-200 dark:bg-gray-800 dark:border-gray-700">
+                            <h2 class="mb-4 text-2xl font-bold">Features Overview</h2>
+                            <p class="mb-4">Our application includes the following key features to help you manage customer feedback:</p>
                             
                             <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
-                                <div class="p-4 border rounded-lg border-zinc-200">
-                                    <h3 class="mb-2 text-lg font-semibold text-zinc-700">User Management</h3>
-                                    <p class="text-zinc-600">Comprehensive user management with roles and permissions.</p>
+                                <div class="p-4 border rounded-lg border-zinc-200 dark:border-gray-700">
+                                    <h3 class="mb-2 text-lg font-semibold">Site Management</h3>
+                                    <p>Add and manage multiple websites for which you want to collect NPS feedback.</p>
                                 </div>
                                 
-                                <div class="p-4 border rounded-lg border-zinc-200">
-                                    <h3 class="mb-2 text-lg font-semibold text-zinc-700">Dashboard Analytics</h3>
-                                    <p class="text-zinc-600">Real-time analytics and reporting dashboard.</p>
+                                <div class="p-4 border rounded-lg border-zinc-200 dark:border-gray-700">
+                                    <h3 class="mb-2 text-lg font-semibold">NPS Dashboard</h3>
+                                    <p>View detailed NPS scores, trends, and individual feedback comments for each site.</p>
                                 </div>
                                 
-                                <div class="p-4 border rounded-lg border-zinc-200">
-                                    <h3 class="mb-2 text-lg font-semibold text-zinc-700">Content Management</h3>
-                                    <p class="text-zinc-600">Easy-to-use content management system.</p>
+                                <div class="p-4 border rounded-lg border-zinc-200 dark:border-gray-700">
+                                    <h3 class="mb-2 text-lg font-semibold">Feedback Filtering & Sorting</h3>
+                                    <p>Easily filter feedback by score type (Promoter, Passive, Detractor), date range, or search terms. Sort feedback by score, date, and more.</p>
                                 </div>
                                 
-                                <div class="p-4 border rounded-lg border-zinc-200">
-                                    <h3 class="mb-2 text-lg font-semibold text-zinc-700">API Integration</h3>
-                                    <p class="text-zinc-600">RESTful API for third-party integrations.</p>
+                                <div class="p-4 border rounded-lg border-zinc-200 dark:border-gray-700">
+                                    <h3 class="mb-2 text-lg font-semibold">User Account Management</h3>
+                                    <p>Manage your profile settings and account preferences.</p>
                                 </div>
                             </div>
                             
-                            <p class="text-zinc-600">Each feature is documented in detail in its own section.</p>
+                            <p>Explore the <a href="#nps-dashboard" class="text-primary-600 dark:text-primary-400 hover:underline">NPS Dashboard Guide</a> for a detailed walkthrough.</p>
                         </section>
-                        
-                        <!-- Suggestions for Documentation Improvement -->
-                        <section class="p-6 mb-12 border rounded-lg shadow-sm bg-secondary-50 border-secondary-200">
-                            <h2 class="mb-4 text-2xl font-bold text-secondary-700">Documentation Best Practices</h2>
-                            <p class="mb-4">Consider enhancing your documentation with the following elements:</p>
-                            
-                            <ul class="pl-6 mb-4 list-disc text-zinc-700">
-                                <li>Video tutorials for complex features</li>
-                                <li>Interactive examples where possible</li>
-                                <li>Searchable content for quick reference</li>
-                                <li>Versioned documentation to match application releases</li>
-                                <li>User feedback mechanism to improve documentation</li>
-                                <li>Frequently Asked Questions (FAQ) section</li>
-                                <li>Changelog to track updates</li>
-                            </ul>
-                            
-                            <div class="p-4 bg-white rounded-md">
-                                <p class="text-sm text-zinc-600">Remember that good documentation is living and evolving. Regular updates based on user feedback and new features are essential.</p>
+
+                        <!-- NPS Dashboard Section (Keep as is, maybe adjust title slightly) -->
+                        <section id="nps-dashboard" class="p-6 mb-12 bg-white border rounded-lg shadow-sm border-zinc-200 dark:bg-gray-800 dark:border-gray-700">
+                            <h2 class="mb-4 text-2xl font-bold">NPS Dashboard Guide</h2>
+                            <p class="mb-4">The Net Promoter Score (NPS) Dashboard provides a comprehensive overview of customer feedback for your selected sites.</p>
+
+                            <div class="mb-6">
+                                <h3 class="mb-2 text-xl font-semibold text-zinc-700">Site Selection</h3>
+                                <p>If you manage multiple sites, use the dropdown menu at the top right of the dashboard to select the specific site for which you want to view NPS data. The dashboard metrics and feedback table will update automatically when you switch sites.</p>
+                            </div>
+
+                            <div class="mb-6">
+                                <h3 class="mb-2 text-xl font-semibold text-zinc-700">Key Metrics</h3>
+                                <p>The dashboard displays several key performance indicators (KPIs) based on the selected site and date filter:</p>
+                                <ul class="pl-6 mt-2 list-disc">
+                                    <li><strong>NPS Score:</strong> The overall Net Promoter Score, calculated as (% Promoters - % Detractors).</li>
+                                    <li><strong>Average Score:</strong> The mathematical average of all submitted scores.</li>
+                                    <li><strong>Total Responses:</strong> The total number of feedback responses received.</li>
+                                    <li><strong>Promoters (9-10):</strong> Count and percentage of respondents likely to recommend.</li>
+                                    <li><strong>Passives (7-8):</strong> Count and percentage of satisfied but unenthusiastic respondents.</li>
+                                    <li><strong>Detractors (0-6):</strong> Count and percentage of unhappy respondents unlikely to recommend.</li>
+                                </ul>
+                            </div>
+
+                            <div class="mb-6">
+                                <h3 class="mb-2 text-xl font-semibold text-zinc-700">Feedback Overview Table</h3>
+                                <p>Below the metrics, you'll find a table listing individual feedback responses. This table includes:</p>
+                                <ul class="pl-6 mt-2 list-disc">
+                                    <li><strong>Score:</strong> The numerical score given by the respondent.</li>
+                                    <li><strong>Feedback:</strong> The textual comment left by the respondent (if any).</li>
+                                    <li><strong>Date:</strong> When the feedback was submitted.</li>
+                                    <li><strong>Type:</strong> Classification as Promoter, Passive, or Detractor based on the score.</li>
+                                    <li><strong>IP Address:</strong> The IP address from which the feedback was submitted.</li>
+                                    <li><strong>Tag:</strong> Any custom tag associated with the response.</li>
+                                </ul>
+                            </div>
+
+                            <div class="mb-6">
+                                <h3 class="mb-2 text-xl font-semibold text-zinc-700">Filtering and Sorting</h3>
+                                <p>You can refine the data shown in the metrics and feedback table using the filters located above the table:</p>
+                                <ul class="pl-6 mt-2 list-disc">
+                                    <li><strong>Search:</strong> Filter feedback by keywords found in the comment, IP address, or tag.</li>
+                                    <li><strong>Type Filter:</strong> Show only Promoters, Passives, or Detractors.</li>
+                                    <li><strong>Date Filter:</strong> Limit the data to a specific period (Today, Last 7 Days, Last 30 Days, Last Year, All Time).</li>
+                                </ul>
+                                <p class="mt-2">You can also sort the feedback table by clicking on the column headers for Score, Date, IP Address, or Tag. Clicking a header again reverses the sort direction.</p>
+                            </div>
+                        </section>
+
+                        <!-- Adding Sites & Implementing Script Section -->
+                        <section id="adding-sites-script" class="p-6 mb-12 bg-white border rounded-lg shadow-sm border-zinc-200 dark:bg-gray-800 dark:border-gray-700">
+                            <h2 class="mb-4 text-2xl font-bold">Adding Sites & Implementing the Script</h2>
+                            <p class="mb-4">To start collecting NPS feedback, you first need to add your website(s) to the application and then place a unique script tag on your site.</p>
+
+                            <div class="mb-6">
+                                <h3 class="mb-2 text-xl font-semibold">1. Adding a New Site</h3>
+                                <p>Navigate to the "Sites" or "Settings" section within the application (check the main navigation menu). Here you should find an option like "Add New Site" or similar.</p>
+                                <p class="mt-2">You will typically need to provide:</p>
+                                <ul class="pl-6 mt-2 list-disc">
+                                    <li><strong>Site Name:</strong> A descriptive name for your site (e.g., "My Company Blog").</li>
+                                    <li><strong>Site Domain:</strong> The exact domain where the script will run (e.g., <code>www.example.com</code> or <code>blog.example.com</code>). Make sure this matches your website's URL precisely, including whether it uses <code>www</code> or not.</li>
+                                </ul>
+                                <p class="mt-2">After saving the site, it will appear in your list of sites, and you'll be able to generate its unique script tag.</p>
+                            </div>
+
+                            <div class="mb-6">
+                                <h3 class="mb-2 text-xl font-semibold">2. Finding Your Script Tag</h3>
+                                <p>Once a site is added, go to its settings or details page within the application. You should find a section displaying the Javascript snippet (script tag) specific to that site.</p>
+                                <p class="mt-2">The script tag will look something like this (your actual script URL will be different):</p>
+                                <div class="p-3 my-2 overflow-x-auto rounded-md bg-zinc-900 text-zinc-200">
+                                    <code>&lt;script src="https://your-nps-app-domain.com/script/YOUR_UNIQUE_SITE_ID.js" defer&gt;&lt;/script&gt;</code>
+                                </div>
+                                <p class="mt-2">Copy this entire snippet. You need to add this to the HTML of the website you just registered.</p>
+                            </div>
+
+                            <div class="mb-6">
+                                <h3 class="mb-2 text-xl font-semibold">3. Implementing the Script Tag</h3>
+                                <p>The script tag should be placed just before the closing <code>&lt;/body&gt;</code> tag in your website's HTML template. This ensures it loads efficiently without blocking page content.</p>
+                                <p class="mt-2">Here's how to do it on various platforms:</p>
+
+                                <div class="p-4 mt-4 border-l-4 rounded-md bg-primary-50 border-primary-500 dark:bg-primary-900 dark:border-primary-700">
+                                    <h4 class="mb-2 font-semibold text-primary-800 dark:text-primary-200">WordPress</h4>
+                                    <p class="text-primary-700 dark:text-primary-300">The easiest way is often using a plugin designed for adding header/footer scripts (e.g., "Insert Headers and Footers"). Paste the script tag into the "Footer" section of the plugin settings.</p>
+                                    <p class="mt-1 text-primary-700 dark:text-primary-300">Alternatively, if you're comfortable editing theme files (use a child theme!), you can add the script tag directly into your theme's <code>footer.php</code> file, right before <code>&lt;/body&gt;</code>.</p>
+                                    <p class="mt-1 text-primary-700 dark:text-primary-300">Some page builders or themes might also offer a specific setting for adding custom scripts globally.</p>
+                                </div>
+
+                                <div class="p-4 mt-4 border-l-4 rounded-md bg-secondary-50 border-secondary-500 dark:bg-secondary-900 dark:border-secondary-700">
+                                    <h4 class="mb-2 font-semibold text-secondary-800 dark:text-secondary-200">Other CMS (e.g., Joomla, Drupal, Shopify)</h4>
+                                    <p class="text-secondary-700 dark:text-secondary-300">Look for theme settings, template options, or a specific section for "Custom Code" or "Tracking Scripts". Most CMS platforms provide a way to insert code snippets into the header or footer globally across the site. The goal is always to place the script just before the closing <code>&lt;/body&gt;</code> tag in the main template file.</p>
+                                    <p class="mt-1 text-secondary-700 dark:text-secondary-300">Consult your specific CMS documentation if you're unsure where to add custom footer scripts.</p>
+                                </div>
+
+                                <div class="p-4 mt-4 border-l-4 rounded-md bg-zinc-100 border-zinc-500 dark:bg-gray-700 dark:border-gray-500">
+                                    <h4 class="mb-2 font-semibold text-zinc-800 dark:text-gray-200">Laravel</h4>
+                                    <p class="text-zinc-700 dark:text-gray-300">In your main Blade layout file (e.g., <code>resources/views/layouts/app.blade.php</code>), find the closing <code>&lt;/body&gt;</code> tag and paste the script tag right before it:</p>
+                                    <div class="p-3 my-2 overflow-x-auto rounded-md bg-zinc-900 text-zinc-200">
+<pre><code>    ...
+    &lt;script src="https://your-nps-app-domain.com/script/YOUR_UNIQUE_SITE_ID.js" defer&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 mt-4 border-l-4 border-teal-500 rounded-md bg-teal-50 dark:bg-teal-900 dark:border-teal-700">
+                                    <h4 class="mb-2 font-semibold text-teal-800 dark:text-teal-200">Front-End Frameworks (React, Vue, Angular, Svelte etc.)</h4>
+                                    <p class="text-teal-700 dark:text-teal-300">For Single Page Applications (SPAs), you typically add the script tag to the main HTML file that serves as the entry point for your application.</p>
+                                    <ul class="pl-6 mt-1 text-teal-700 list-disc dark:text-teal-300">
+                                        <li><strong>React (Create React App):</strong> Edit <code>public/index.html</code> and add the script before <code>&lt;/body&gt;</code>.</li>
+                                        <li><strong>Vue (Vue CLI / Vite):</strong> Edit <code>public/index.html</code> (Vue CLI) or <code>index.html</code> in the root (Vite) and add the script before <code>&lt;/body&gt;</code>.</li>
+                                        <li><strong>Angular (Angular CLI):</strong> Edit <code>src/index.html</code> and add the script before <code>&lt;/body&gt;</code>.</li>
+                                        <li><strong>SvelteKit:</strong> Edit <code>src/app.html</code> and add the script before <code>%sveltekit.body%</code> or just before <code>&lt;/body&gt;</code>.</li>
+                                    </ul>
+                                    <p class="mt-1 text-teal-700 dark:text-teal-300">Avoid adding the script dynamically within component lifecycles unless absolutely necessary, as it should ideally load once with the initial HTML.</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <h3 class="mb-2 text-xl font-semibold">4. Verification</h3>
+                                <p>After adding the script tag, clear any caches on your website (server-side cache, CDN, browser cache) and visit your site. The NPS survey widget should appear according to its configured rules (this might depend on settings within the NPS application not covered here, like display frequency or targeting).</p>
+                                <p class="mt-2">You can also check your browser's developer tools (Network tab) to confirm that the script (e.g., <code>YOUR_UNIQUE_SITE_ID.js</code>) is being loaded successfully.</p>
                             </div>
                         </section>
                     </div>
@@ -231,22 +250,23 @@
     <script>
         function docsSearch() {
             return {
+                searchOpen: false,
                 query: '',
                 sections: [],
                 results: [],
                 init() {
-                    // Collect content from sections
+                    const allowedSectionIds = ['getting-started', 'features', 'nps-dashboard', 'adding-sites-script'];
                     document.querySelectorAll('section[id]').forEach(section => {
-                        const titleElement = section.querySelector('h2');
-                        if (titleElement) {
-                            this.sections.push({
-                                id: section.id,
-                                title: titleElement.textContent.trim(),
-                                // Simple text extraction, might need refinement
-                                content: section.innerText.toLowerCase(), 
-                                // Get first ~150 chars for preview
-                                preview: section.innerText.substring(0, 150).trim() 
-                            });
+                        if (allowedSectionIds.includes(section.id)) {
+                            const titleElement = section.querySelector('h2');
+                            if (titleElement) {
+                                this.sections.push({
+                                    id: section.id,
+                                    title: titleElement.textContent.trim(),
+                                    content: section.innerText.toLowerCase(), 
+                                    preview: section.innerText.substring(0, 150).trim() 
+                                });
+                            }
                         }
                     });
 
@@ -254,7 +274,6 @@
                         this.search();
                     });
 
-                    // Focus input when modal opens
                     this.$watch('searchOpen', (isOpen) => {
                         if (isOpen) {
                             this.$nextTick(() => this.$refs.searchInput.focus());
@@ -276,13 +295,12 @@
                     const element = document.getElementById(id);
                     if (element) {
                         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        // Add a temporary highlight effect (optional)
                         element.classList.add('ring-2', 'ring-primary-500', 'ring-offset-2', 'dark:ring-offset-zinc-900', 'transition-all', 'duration-300', 'ease-in-out');
                         setTimeout(() => {
                              element.classList.remove('ring-2', 'ring-primary-500', 'ring-offset-2', 'dark:ring-offset-zinc-900', 'transition-all', 'duration-300', 'ease-in-out');
                         }, 1500);
                     }
-                    this.searchOpen = false; // Close modal after navigating
+                    this.searchOpen = false;
                 }
             }
         }

@@ -1,4 +1,4 @@
-<x-layouts.app title="Mijn Sites">
+<x-layouts.app :title="__('My Sites')">
 
 {{-- Add CSS for x-cloak --}}
 @push('styles')
@@ -23,17 +23,20 @@
 
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                Mijn Sites
+                My Sites
             </h1>
             @if($canCreateMore)
                 <a href="{{ route('sites.create') }}"
                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
-                    Nieuwe Site
+                    <svg class="w-5 h-5 mr-2 -ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Add New Site
                 </a>
             @else
-                 <flux:tooltip content="Upgrade naar Pro voor onbeperkte sites (Basic: max 1 site)" position="left">
+                 <flux:tooltip content="Upgrade to Pro for unlimited sites (Basic: max 1 site)" position="left">
                     <span class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-400 bg-gray-200 border border-transparent rounded-md cursor-not-allowed dark:bg-gray-700 dark:text-gray-500">
-                       Nieuwe Site
+                       Add New Site
                     </span>
                 </flux:tooltip>
             @endif
@@ -44,14 +47,14 @@
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Naam</th>
-                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Domein</th>
+                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Name</th>
+                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Domain</th>
                             <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Number of responses</th>
 
                             <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Public ID</th>
-                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Aangemaakt op</th>
+                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Created at</th>
                             <th scope="col" class="relative px-6 py-3">
-                                <span class="sr-only">Acties</span>
+                                <span class="sr-only">Actions</span>
                             </th>
                         </tr>
                     </thead>
@@ -68,11 +71,11 @@
                                 <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                                     {{-- Script Tag Display (Later) --}}
                                     <button type="button" onclick="showSiteScriptModal('{{ $site->public_id }}')" class="mr-3 text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Script</button>
-                                    <a href="{{ route('sites.edit', $site) }}" class="mr-3 text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Bewerk</a>
-                                    <form action="{{ route('sites.destroy', $site) }}" method="POST" class="inline-block" onsubmit="return confirm('Weet je zeker dat je deze site wilt verwijderen?');">
+                                        <a href="{{ route('sites.edit', $site) }}" class="mr-3 text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Edit</a>
+                                        <form action="{{ route('sites.destroy', $site) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this site?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">Verwijder</button>
+                                        <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">Delete</button>
                                     </form>
                                 </td>
                             </tr>
@@ -113,7 +116,7 @@
                 <div>
                     <div class="flex items-center justify-between">
                          <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100" id="modal-title">
-                            Embed Script
+                            Embed Script voor <span x-text="siteNameToCopy"></span>
                         </h3>
                         <button @click="open = false" type="button" class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400">
                             <span class="sr-only">Sluiten</span>
@@ -124,20 +127,26 @@
                     </div>
                     <div class="mt-3">
                         <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Plaats het volgende script in de <code>&lt;head&gt;</code> of vóór de sluitende <code>&lt;/body&gt;</code> tag van je website om NPS-feedback te verzamelen.
+                            Kopieer en plak dit script vlak voor de afsluitende <code>&lt;/body&gt;</code> tag op je website.
                         </p>
-                        <div class="relative p-3 mt-4 font-mono text-sm text-gray-800 bg-gray-100 rounded-md dark:bg-gray-900 dark:text-gray-200">
-                            <pre class="overflow-x-auto"><code x-text="scriptContent"></code></pre>
-                            <button @click="copyToClipboard()" type="button"
-                                    :class="buttonText === 'Gekopieerd!' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'"
-                                    class="absolute px-2 py-1 text-xs font-medium rounded top-2 right-2">
-                                <span x-text="buttonText"></span>
+                        <div class="relative mt-4">
+                            <textarea x-ref="scriptToCopy" readonly
+                                      class="block w-full px-3 py-2 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-md shadow-sm resize-none dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" rows="4"></textarea>
+                             <button @click="copyToClipboard($refs.scriptToCopy.value)"
+                                     class="absolute p-1 text-gray-400 bg-gray-200 rounded top-2 right-2 hover:text-gray-600 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-gray-300">
+                                <span x-show="!copied">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                </span>
+                                 <span x-show="copied" style="display: none;">
+                                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                 </span>
                             </button>
                         </div>
+                        <p x-show="copied" class="mt-1 text-xs text-green-600 dark:text-green-400" style="display: none;">Gekopieerd!</p>
                     </div>
                 </div>
                 <div class="mt-5 sm:mt-6">
-                    <button @click="open = false" type="button" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                    <button @click="open = false" type="button" class="inline-flex justify-center w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
                         Sluiten
                     </button>
                 </div>
