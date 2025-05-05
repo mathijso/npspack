@@ -1,6 +1,19 @@
 <x-layouts.app title="Nieuwe Site Aanmaken">
     <div class="container px-4 mx-auto mt-8 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
+
+            {{-- Flash Messages (Should not occur often here, but good practice) --}}
+            @if (session('success'))
+                <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <div class="mb-6">
                  <a href="{{ route('sites.index') }}" class="text-sm text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
                      &larr; Terug naar overzicht

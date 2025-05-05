@@ -1,5 +1,18 @@
 <x-layouts.app title="Mijn Sites">
     <div class="container px-4 mx-auto mt-8 sm:px-6 lg:px-8">
+
+        {{-- Flash Messages --}}
+        @if (session('success'))
+            <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                 Mijn Sites
@@ -41,7 +54,7 @@
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-300">{{ $site->created_at->isoFormat('lll') }}</td>
                                 <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                                     {{-- Script Tag Display (Later) --}}
-                                    <button type="button" onclick="showScriptTag('{{ $site->public_id }}')" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">Script</button>
+                                    <button type="button" onclick="showScriptTag('{{ $site->public_id }}')" class="mr-3 text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Script</button>
                                     <a href="{{ route('sites.edit', $site) }}" class="mr-3 text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Bewerk</a>
                                     <form action="{{ route('sites.destroy', $site) }}" method="POST" class="inline-block" onsubmit="return confirm('Weet je zeker dat je deze site wilt verwijderen?');">
                                         @csrf

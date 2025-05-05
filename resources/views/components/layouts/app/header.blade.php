@@ -17,10 +17,12 @@
             </a>
 
             <flux:navbar class="-mb-px max-lg:hidden">
-                <flux:navbar.item icon="" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
-                
+                <flux:navbar.item icon="server-stack" :href="route('sites.index')" :current="request()->routeIs('sites.*')" wire:navigate>
+                    {{ __('Sites') }}
+                </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
@@ -104,6 +106,9 @@
                 <flux:navlist.group :heading="__('Platform')">
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
+                    </flux:navlist.item>
+                     <flux:navlist.item icon="server-stack" :href="route('sites.index')" :current="request()->routeIs('sites.*')" wire:navigate>
+                        {{ __('Sites') }}
                     </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
