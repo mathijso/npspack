@@ -12,11 +12,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\Site;
 use App\Models\Package;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -53,13 +54,45 @@ class User extends Authenticatable
         return Str::of($this->name)->explode(' ')->map(fn(string $name) => Str::of($name)->substr(0, 1))->implode('');
     }
 
-    public function sites(): HasMany      
+    /**
+     * Get the sites associated with the user.
+     */
+    public function sites(): HasMany
     {
         return $this->hasMany(Site::class);
     }
 
+    /**
+     * Get the package associated with the user.
+     */
     public function package(): HasOne
     {
+        // Assuming a user might not have a package record initially (defaults to basic)
         return $this->hasOne(Package::class);
+    }
+
+    /**
+     * Get the user's package type ('basic' or 'pro').
+     *
+     * @return string
+     */
+    public function getPackageTypeAttribute(): string
+    {
+        return $this->package?->type ?? 'basic';
+    }
+
+    /**
+     * Check if the user can create more sites based on their package.
+     *
+     * @return bool
+     */
+    public function canCreateMoreSites(): bool
+    {
+        if ($this->package_type === 'pro') {
+            return true; // Pro users have unlimited sites
+        }
+
+        // Basic users can only have 1 site
+        return $this->sites()->count() < 1;
     }
 }

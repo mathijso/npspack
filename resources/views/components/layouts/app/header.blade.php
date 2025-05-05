@@ -54,7 +54,20 @@
                                 
 
                                 <div class="grid flex-1 text-sm leading-tight text-start">
-                                    <span class="font-semibold truncate">{{ auth()->user()->name }}</span>
+                                    <div class="flex items-center space-x-1.5">
+                                        <span class="font-semibold truncate">{{ auth()->user()->name }}</span>
+                                        @auth
+                                            @php
+                                                $packageType = auth()->user()->package_type;
+                                                $badgeClass = $packageType === 'pro' 
+                                                    ? 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white'
+                                                    : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200';
+                                            @endphp
+                                            <span class="inline-flex items-center rounded-full {{ $badgeClass }} px-2 py-0.5 text-xs font-medium capitalize">
+                                                {{ $packageType }}
+                                            </span>
+                                        @endauth
+                                    </div>
                                     <span class="text-xs truncate">{{ auth()->user()->email }}</span>
                                 </div>
                             </div>

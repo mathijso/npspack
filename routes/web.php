@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\LegalController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -15,7 +17,11 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-    Route::view('docs', 'docs')
+Route::view('profile', 'profile')
+    ->middleware(['auth'])
+    ->name('profile');
+
+Route::view('docs', 'docs')
     ->middleware(['auth', 'verified'])
     ->name('docs');
 
@@ -25,6 +31,8 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+
+    Route::resource('sites', SiteController::class);
 });
 
 require __DIR__.'/auth.php';
