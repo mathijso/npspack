@@ -1,4 +1,12 @@
 <x-layouts.app title="Mijn Sites">
+
+{{-- Add CSS for x-cloak --}}
+@push('styles')
+<style>
+    [x-cloak] { display: none !important; }
+</style>
+@endpush
+
     <div class="container px-4 mx-auto mt-8 sm:px-6 lg:px-8">
 
         {{-- Flash Messages --}}
@@ -54,7 +62,7 @@
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-300">{{ $site->created_at->isoFormat('lll') }}</td>
                                 <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                                     {{-- Script Tag Display (Later) --}}
-                                    <button type="button" onclick="showScriptTag('{{ $site->public_id }}')" class="mr-3 text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Script</button>
+                                    <button type="button" onclick="showSiteScriptModal('{{ $site->public_id }}')" class="mr-3 text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Script</button>
                                     <a href="{{ route('sites.edit', $site) }}" class="mr-3 text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Bewerk</a>
                                     <form action="{{ route('sites.destroy', $site) }}" method="POST" class="inline-block" onsubmit="return confirm('Weet je zeker dat je deze site wilt verwijderen?');">
                                         @csrf
@@ -77,26 +85,54 @@
     </div>
 
     {{-- Simple Modal for Script Tag --}}
-    <div id="scriptModal" x-data="{ open: false, publicId: '' }" x-show="open" style="display: none;" @keydown.escape.window="open = false" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    {{-- Initialize Alpine by calling scriptModalData() --}}
+    {{-- Listen for the custom 'open-script-modal' event on the window --}}
+    <div id="scriptModal" x-data="scriptModalData()"
+         @open-script-modal.window="
+            publicId = $event.detail.publicId;
+            buttonText = 'Kopieer Script'; // Reset button text
+            open = true;
+         "
+         x-show="open" x-cloak
+         style="display: none;"
+         @keydown.escape.window="open = false"
+         class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true"
+    >
         <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true"></div>
+            {{-- Background overlay --}}
+            <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75 dark:bg-gray-900/80" @click="open = false" aria-hidden="true"></div>
+
+            {{-- Modal panel --}}
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
             <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="inline-block w-full max-w-lg px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:align-middle sm:p-6">
                 <div>
-                    <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100" id="modal-title">
-                        Embed Script
-                    </h3>
-                    <div class="mt-2">
+                    <div class="flex items-center justify-between">
+                         <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100" id="modal-title">
+                            Embed Script
+                        </h3>
+                        <button @click="open = false" type="button" class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400">
+                            <span class="sr-only">Sluiten</span>
+                             <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-3">
                         <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Plaats het volgende script in de <code>&lt;head&gt;</code> of <code>&lt;body&gt;</code> van je website om NPS-feedback te verzamelen.
+                            Plaats het volgende script in de <code>&lt;head&gt;</code> of vóór de sluitende <code>&lt;/body&gt;</code> tag van je website om NPS-feedback te verzamelen.
                         </p>
-                        <div class="p-3 mt-4 font-mono text-sm text-gray-800 bg-gray-100 rounded-md dark:bg-gray-900 dark:text-gray-200">
-                            &lt;script src="{{ config('app.url') }}/js/nps-widget.js" data-site-id="<span x-text=\"publicId\"></span>" defer&gt;&lt;/script&gt;
+                        <div class="relative p-3 mt-4 font-mono text-sm text-gray-800 bg-gray-100 rounded-md dark:bg-gray-900 dark:text-gray-200">
+                            <pre class="overflow-x-auto"><code x-text="scriptContent"></code></pre>
+                            <button @click="copyToClipboard()" type="button"
+                                    :class="buttonText === 'Gekopieerd!' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'"
+                                    class="absolute px-2 py-1 text-xs font-medium rounded top-2 right-2">
+                                <span x-text="buttonText"></span>
+                            </button>
                         </div>
                     </div>
                 </div>
                 <div class="mt-5 sm:mt-6">
-                    <button @click="open = false" type="button" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                    <button @click="open = false" type="button" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
                         Sluiten
                     </button>
                 </div>
@@ -105,11 +141,36 @@
     </div>
 
     <script>
-        function showScriptTag(publicId) {
-            const modal = document.getElementById('scriptModal');
-            const alpineData = modal.__x.
-            alpineData.publicId = publicId;
-            alpineData.open = true;
+        // Define the data structure for the Alpine component
+        function scriptModalData() {
+            return {
+                open: false,
+                publicId: '',
+                buttonText: 'Kopieer Script',
+                appUrl: '{{ rtrim(config("app.url"), '/') }}',
+                get scriptContent() {
+                    // Use string concatenation for robustness
+                    return '<script src="' + this.appUrl + '/js/nps-widget.js" data-site-id="' + this.publicId + '" defer><\/script>';
+                },
+                copyToClipboard() {
+                    navigator.clipboard.writeText(this.scriptContent).then(() => {
+                        this.buttonText = 'Gekopieerd!';
+                        setTimeout(() => { this.buttonText = 'Kopieer Script'; }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        alert('Kon niet naar klembord kopiëren.');
+                    });
+                }
+                // No need for init() or specific event listeners here anymore for opening
+            };
+        }
+
+        // Function called by the button's onclick
+        function showSiteScriptModal(publicId) {
+            // Dispatch a custom browser event that Alpine can listen for
+             window.dispatchEvent(new CustomEvent('open-script-modal', {
+                 detail: { publicId: publicId }
+             }));
         }
     </script>
 </x-layouts.app> 

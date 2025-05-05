@@ -10,6 +10,7 @@ use App\Models\NpsResponse;
 
 class Site extends Model
 {
+    protected $fillable = ['name', 'domain', 'public_id'];
     public function user(): BelongsTo
 {
     return $this->belongsTo(User::class);
