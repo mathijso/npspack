@@ -43,6 +43,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 
@@ -72,22 +73,41 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if the user is an administrator.
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->is_admin;
+    }
+
+    /**
      * Get the user's package type ('basic' or 'pro').
+     * Admins are always considered 'pro'.
      *
      * @return string
      */
     public function getPackageTypeAttribute(): string
     {
+        if ($this->isAdmin()) {
+            return 'pro';
+        }
         return $this->package?->type ?? 'basic';
     }
 
     /**
      * Check if the user can create more sites based on their package.
+     * Admins can always create more sites.
      *
      * @return bool
      */
     public function canCreateMoreSites(): bool
     {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
         if ($this->package_type === 'pro') {
             return true; // Pro users have unlimited sites
         }

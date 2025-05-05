@@ -46,6 +46,8 @@
                         <tr>
                             <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Naam</th>
                             <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Domein</th>
+                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Number of responses</th>
+
                             <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Public ID</th>
                             <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">Aangemaakt op</th>
                             <th scope="col" class="relative px-6 py-3">
@@ -57,7 +59,10 @@
                         @forelse ($sites as $site)
                             <tr>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-gray-100">{{ $site->name }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-300">{{ $site->domain }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-300">
+                                    <a href="https://{{ $site->domain }}" target="_blank" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">{{ $site->domain }}</a>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-300">{{ $site->responses->count() }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-300"><code>{{ $site->public_id }}</code></td>
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-300">{{ $site->created_at->isoFormat('lll') }}</td>
                                 <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
