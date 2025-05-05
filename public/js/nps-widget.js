@@ -3,6 +3,7 @@
     const siteId = scriptTag ? scriptTag.getAttribute('data-site-id') : null;
     const widgetDelay = parseInt(scriptTag ? scriptTag.getAttribute('data-delay') : '5000', 10); // Delay in ms, default 5s
     const localStorageKey = `nps_submitted_${siteId}`;
+    const sessionStorageKey = `nps_skipped_${siteId}`; // For session dismiss
 
     if (!siteId) {
         console.error('NPS Widget: data-site-id attribute not found.');
@@ -49,7 +50,7 @@
             min-height: 80px;
         }
          .nps-widget-feedback textarea:focus { outline: 2px solid transparent; outline-offset: 2px; border-color: #4f46e5; box-shadow: 0 0 0 2px #4f46e5; }
-        .nps-widget-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+        .nps-widget-actions { display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 16px; }
         .nps-widget-btn {
             padding: 8px 16px; border-radius: 6px; font-size: 0.875rem; font-weight: 500;
             cursor: pointer; transition: background-color 0.15s ease-in-out;
@@ -60,6 +61,11 @@
         .nps-widget-btn-submit:hover { background-color: #4338ca; }
         .nps-widget-btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
         .nps-thank-you { text-align: center; padding: 20px; font-size: 1.1rem; color: #1f2937; }
+        .nps-widget-btn-link {
+            background: none; border: none; padding: 0;
+            font-size: 0.8rem; color: #6b7280; cursor: pointer; text-decoration: underline;
+        }
+        .nps-widget-btn-link:hover { color: #374151; }
     `;
 
     // --- Modal HTML Structure --- 
@@ -75,7 +81,9 @@
                     <textarea id="nps-feedback" placeholder="Wat is de belangrijkste reden voor je score?"></textarea>
                 </div>
                 <div class="nps-widget-actions">
-                    <button type="button" class="nps-widget-btn nps-widget-btn-cancel" id="nps-cancel-btn">Annuleren</button>
+                    <button type="button" class="nps-widget-btn-link" id="nps-skip-btn">Nu overslaan</button>
+                    <button type="button" class="nps-widget-btn-link" id="nps-never-btn">Niet meer tonen</button>
+                    <span style="flex-grow: 1;"></span>
                     <button type="submit" class="nps-widget-btn nps-widget-btn-submit" id="nps-submit-btn" disabled>Versturen</button>
                 </div>
             </form>
@@ -213,14 +221,35 @@
         }
     }
 
+    function handleSkipClick() {
+        try {
+            sessionStorage.setItem(sessionStorageKey, 'true');
+        } catch (e) {
+            console.warn('Could not write to sessionStorage');
+        }
+        hideModal();
+    }
+
+    function handleNeverShowClick() {
+        try {
+            // Use the same key as submission for long-term dismissal
+            localStorage.setItem(localStorageKey, Date.now().toString());
+        } catch (e) {
+            console.warn('Could not write to localStorage');
+        }
+        hideModal();
+    }
+
     function addEventListeners() {
         const form = overlayElement.querySelector('#nps-widget-form');
         const scoreContainer = overlayElement.querySelector('#nps-score-buttons');
-        const cancelButton = overlayElement.querySelector('#nps-cancel-btn');
+        const skipButton = overlayElement.querySelector('#nps-skip-btn');
+        const neverButton = overlayElement.querySelector('#nps-never-btn');
 
         scoreContainer.addEventListener('click', handleScoreClick);
         form.addEventListener('submit', handleFormSubmit);
-        cancelButton.addEventListener('click', hideModal);
+        skipButton.addEventListener('click', handleSkipClick);
+        neverButton.addEventListener('click', handleNeverShowClick);
         // Close on overlay click
         overlayElement.addEventListener('click', (event) => {
             if (event.target === overlayElement) {
@@ -293,35 +322,44 @@
 
     // --- Initialization ---
     async function init() { // Make init async
-        // Fetch config first
-        const configFetched = await fetchSiteConfig();
-        if (!configFetched) {
-            // Optionally handle config fetch failure, maybe default to not showing?
-            console.warn('NPS Widget: Could not fetch config, widget will not show.');
-            return;
+        // Check session storage first (quickest check)
+        try {
+            if (sessionStorage.getItem(sessionStorageKey)) {
+                console.log('NPS Widget: Skipped this session.');
+                return;
+            }
+        } catch (e) {
+            console.warn('Could not read from sessionStorage');
         }
 
-        // Check if path is allowed
-        if (!isPathAllowed(window.location.pathname, siteConfig.allowed_paths)) {
-            console.log('NPS Widget: Path not allowed.', window.location.pathname, siteConfig.allowed_paths);
-            return;
-        }
-
-        // Check local storage (existing logic)
+        // Then check local storage for long-term dismiss/submission
         try {
             const lastSubmission = localStorage.getItem(localStorageKey);
-            if (lastSubmission && (Date.now() - parseInt(lastSubmission, 10)) < 30 * 24 * 60 * 60 * 1000) {
-                console.log('NPS Widget: Already submitted recently.');
+            if (lastSubmission && (Date.now() - parseInt(lastSubmission, 10)) < 30 * 24 * 60 * 60 * 1000) { // 30 days
+                console.log('NPS Widget: Already submitted/dismissed recently.');
                 return;
             }
         } catch (e) {
             console.warn('Could not read from localStorage');
         }
 
-        // If allowed and not submitted recently, proceed to show
+        // Fetch config (moved after storage checks)
+        const configFetched = await fetchSiteConfig();
+        if (!configFetched) {
+            console.warn('NPS Widget: Could not fetch config, widget will not show.');
+            return;
+        }
+
+        // Check if path is allowed (moved after storage checks)
+        if (!isPathAllowed(window.location.pathname, siteConfig.allowed_paths)) {
+            console.log('NPS Widget: Path not allowed.', window.location.pathname, siteConfig.allowed_paths);
+            return;
+        }
+
+        // If checks pass, proceed to show
         injectStyles();
         setTimeout(showModal, widgetDelay);
-        console.log(`NPS Widget Initialized for site ${siteId}. Path allowed. Modal will show in ${widgetDelay / 1000}s.`);
+        console.log(`NPS Widget Initialized for site ${siteId}. Checks passed. Modal will show in ${widgetDelay / 1000}s.`);
     }
 
     // Run init when the DOM is ready
