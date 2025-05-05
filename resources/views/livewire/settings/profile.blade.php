@@ -5,18 +5,37 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use Livewire\Volt\Component;
+use LemonSqueezy\Laravel\Subscription;
 
 new class extends Component {
     public string $name = '';
     public string $email = '';
+    public ?Subscription $subscription = null;
+    public bool $isAdmin = false;
+    public string $customerPortalUrl = '';
+    public string $packageType = 'none';
 
     /**
      * Mount the component.
      */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
+        $user = Auth::user();
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->isAdmin = $user->isAdmin();
+        $this->packageType = $user->package_type;
+
+        if (!$this->isAdmin) {
+            $this->subscription = $user->subscription();
+            if ($this->subscription) {
+                try {
+                    $this->customerPortalUrl = $user->customerPortalUrl();
+                } catch (\Exception $e) {
+                    logger()->error('Could not generate customer portal URL for user: ' . $user->id, ['error' => $e->getMessage()]);
+                }
+            }
+        }
     }
 
     /**
@@ -69,17 +88,17 @@ new class extends Component {
     }
 }; ?>
 
-<section class="w-full">
+<section class="w-full space-y-8">
     @include('partials.settings-heading')
 
     <x-settings.layout :heading="__('Profile')" :subheading="__('Update your name and email address')">
-        <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
+        <form wire:submit="updateProfileInformation" class="w-full my-6 space-y-6">
             <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
             <div>
                 <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
 
-                @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
+                @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !auth()->user()->hasVerifiedEmail())
                     <div>
                         <flux:text class="mt-4">
                             {{ __('Your email address is unverified.') }}
@@ -108,7 +127,55 @@ new class extends Component {
                 </x-action-message>
             </div>
         </form>
-
+    
+         <div class="w-full my-6 space-y-4">
+            @if ($isAdmin)
+                 <div class="p-4 text-sm text-blue-700 bg-blue-100 rounded-lg dark:bg-blue-900 dark:text-blue-300">
+                    Je hebt administrator toegang (Pro Plan).
+                 </div>
+             @elseif ($subscription)
+                 <div>
+                     <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Huidig Plan:</p>
+                     <p class="text-sm text-gray-600 dark:text-gray-400">{{ $subscription->variant->name ?? 'N/A' }}</p>
+                 </div>
+                 <div>
+                     <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Status:</p>
+                     <p class="text-sm text-gray-600 capitalize dark:text-gray-400">{{ $subscription->status() ?? 'N/A' }}</p>
+                 </div>
+                 @if($subscription->onGracePeriod())
+                    <div>
+                         <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Eindigt op:</p>
+                         <p class="text-sm text-gray-600 dark:text-gray-400">{{ $subscription->ends_at?->isoFormat('LL') ?? 'N/A' }}</p>
+                     </div>
+                 @elseif($subscription->renews_at)
+                     <div>
+                         <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Verlengd op:</p>
+                         <p class="text-sm text-gray-600 dark:text-gray-400">{{ $subscription->renews_at?->isoFormat('LL') ?? 'N/A' }}</p>
+                     </div>
+                 @endif
+                 
+                 @if($customerPortalUrl)
+                     <div class="pt-4">
+                        <a href="{{ $customerPortalUrl }}" target="_blank"
+                            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                            Beheer Abonnement
+                        </a>
+                    </div>
+                 @endif
+             @else 
+                <div class="p-4 text-sm text-gray-700 bg-gray-100 rounded-lg dark:bg-gray-700 dark:text-gray-300">
+                    Je hebt geen actief abonnement.
+                 </div>
+                 <div class="pt-2">
+                     <a href="{{ route('subscribe') }}"
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                        Kies een Plan
+                    </a>
+                 </div>
+             @endif
+        </div>
         <livewire:settings.delete-user-form />
     </x-settings.layout>
+
+    
 </section>
