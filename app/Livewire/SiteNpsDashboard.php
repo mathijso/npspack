@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\NpsResponse;
 use App\Models\Site;
 use App\Models\User;
+use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,7 @@ class SiteNpsDashboard extends Component
     #[Url] public ?string $feedbackTypeFilter = null; // 'Promoter', 'Passive', 'Detractor'
     #[Url] public string $feedbackSortBy = 'submitted_at';
     #[Url] public string $feedbackSortDirection = 'desc';
+    #[Url] public string $dateFilter = 'all_time'; // 'today', 'last_7_days', 'last_30_days', 'last_year', 'all_time'
 
     public function mount(): void
     {
@@ -66,10 +68,31 @@ class SiteNpsDashboard extends Component
         $this->resetPage('feedbackPage');
     }
 
+    // Add hook for date filter changes
+    public function updatedDateFilter(): void
+    {
+        $this->resetPage('feedbackPage');
+        $this->calculateMetrics(); // Recalculate metrics based on new date range
+    }
+
     public function resetFiltersAndMetrics(): void
     {
         $this->reset('feedbackSearch', 'feedbackTypeFilter', 'feedbackSortBy', 'feedbackSortDirection');
+        $this->dateFilter = 'all_time'; // Explicitly reset to default
         $this->reset('npsScore', 'averageScore', 'totalResponses', 'promotersCount', 'passivesCount', 'detractorsCount', 'promotersPercentage', 'passivesPercentage', 'detractorsPercentage');
+    }
+
+    // Helper method to apply date filter to query
+    private function applyDateFilter($query)
+    {
+        return match ($this->dateFilter) {
+            'today' => $query->whereDate('submitted_at', Carbon::today()),
+            'last_7_days' => $query->whereBetween('submitted_at', [Carbon::today()->subDays(6), Carbon::now()]), // Include today
+            'last_30_days' => $query->whereBetween('submitted_at', [Carbon::today()->subDays(29), Carbon::now()]), // Include today
+            'last_year' => $query->whereBetween('submitted_at', [Carbon::today()->subYear()->startOfYear(), Carbon::today()->subYear()->endOfYear()]),
+            'all_time' => $query, // No date filter
+            default => $query, // Default to no filter if value is unexpected
+        };
     }
 
     public function calculateMetrics(): void
@@ -79,9 +102,14 @@ class SiteNpsDashboard extends Component
             return; // No site selected
         }
 
-        $responseScores = NpsResponse::where('site_id', $this->selectedSiteId)
-                            ->select('score')
-                            ->get();
+        // Base query
+        $baseQuery = NpsResponse::where('site_id', $this->selectedSiteId);
+
+        // Apply date filter
+        $filteredQuery = $this->applyDateFilter(clone $baseQuery); // Clone to avoid modifying base query for later use if needed
+
+        // Get scores for the filtered period
+        $responseScores = $filteredQuery->select('score')->get();
 
         $this->totalResponses = $responseScores->count();
 
@@ -119,8 +147,13 @@ class SiteNpsDashboard extends Component
 
         if ($this->selectedSiteId) {
              // Base query for feedback
-            $feedbackQuery = NpsResponse::where('site_id', $this->selectedSiteId)
-                ->where(function ($query) {
+            $feedbackBaseQuery = NpsResponse::where('site_id', $this->selectedSiteId);
+
+            // Apply date filter first
+            $feedbackQuery = $this->applyDateFilter(clone $feedbackBaseQuery);
+
+            // Apply search term filter
+            $feedbackQuery->where(function ($query) {
                     $query->where('feedback', 'like', '%'.$this->feedbackSearch.'%')
                           ->orWhere('ip_address', 'like', '%'.$this->feedbackSearch.'%') // Search IP maybe?
                           ->orWhere('tag', 'like', '%'.$this->feedbackSearch.'%');

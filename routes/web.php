@@ -24,7 +24,7 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 Route::view('docs', 'docs')
-    ->middleware(['auth', 'subscribed'])
+    ->middleware(['auth', 'purchased'])
     ->name('docs');
 
 Route::middleware(['auth', 'verified', 'purchased'])->group(function () {

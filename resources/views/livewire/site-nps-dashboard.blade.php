@@ -6,7 +6,7 @@
             <div>
                 <label for="site_selector" class="sr-only">Selecteer Site</label>
                 <select wire:model.live="selectedSiteId" id="site_selector" name="site_selector"
-                        class="block w-full py-2 pl-3 pr-10 mt-1 text-base border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option value="">-- Selecteer een site --</option>
                     @foreach($sites as $site)
                         <option value="{{ $site->id }}">{{ $site->name }} ({{ $site->domain }})</option>
@@ -57,20 +57,36 @@
             <h3 class="mb-4 text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">Feedback Overzicht</h3>
             <div class="overflow-hidden bg-white shadow dark:bg-gray-800 sm:rounded-lg">
                 <div class="px-4 py-5 space-y-4 sm:px-6 md:space-y-0 md:flex md:items-center md:justify-between">
-                    <input
-                        wire:model.live.debounce.300ms="feedbackSearch"
-                        type="text"
-                        placeholder="Zoek feedback, IP, tag..."
-                        class="block w-full border-gray-300 rounded-md shadow-sm md:w-1/3 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
-                    <div class="flex space-x-2">
-                        <select wire:model.live="feedbackTypeFilter" class="border-gray-300 rounded-md shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                            <option value="">Alle Types</option>
-                            <option value="Promoter">Promoters</option>
-                            <option value="Passive">Passives</option>
-                            <option value="Detractor">Detractors</option>
-                        </select>
-                        {{-- Role filter removed as feedback is anonymous --}}
+                    {{-- Filters --}}
+                    <div class="flex flex-col gap-4 mb-4 md:flex-row">
+                        {{-- Search --}}
+                        <div class="flex-grow">
+                            <label for="feedbackSearch" class="sr-only">Search Feedback</label>
+                            <input wire:model.live.debounce.300ms="feedbackSearch" type="search" id="feedbackSearch" placeholder="Search feedback, IP, or tag..." class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        </div>
+
+                        {{-- Type Filter --}}
+                        <div>
+                            <label for="feedbackTypeFilter" class="sr-only">Filter by Type</label>
+                            <select wire:model.live="feedbackTypeFilter" id="feedbackTypeFilter" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="">All Types</option>
+                                <option value="Promoter">Promoters (9-10)</option>
+                                <option value="Passive">Passives (7-8)</option>
+                                <option value="Detractor">Detractors (0-6)</option>
+                            </select>
+                        </div>
+
+                        {{-- Date Filter --}}
+                        <div>
+                            <label for="dateFilter" class="sr-only">Filter by Date</label>
+                            <select wire:model.live="dateFilter" id="dateFilter" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="all_time">All Time</option>
+                                <option value="today">Today</option>
+                                <option value="last_7_days">Last 7 Days</option>
+                                <option value="last_30_days">Last 30 Days</option>
+                                <option value="last_year">Last Year</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
